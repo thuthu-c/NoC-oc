@@ -1,0 +1,26 @@
+class Graph{
+
+    var node;
+    pair<var, var> edge;
+
+    public void setNode(var node) {
+        this.node = node;
+    }
+
+    public void setEdge(pair<node, node> edge) {
+        this.edge = edge;
+    }
+
+    public var getNode() {
+        return node;
+    }
+
+    public pair<node, node> getEdge() {
+        return edge;
+    }
+
+    public addEdge(var nodeA, var nodeB){
+        pair<var, var> edge (nodeA, nodeB);
+        return edge;
+    }
+}
