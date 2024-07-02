@@ -8,7 +8,7 @@ public class NoC {
         routers = new Router[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                routers[i][j] = new Router(i, j);
+                routers[i][j] = new Router(j, i);
             }
         }
         setNeighbors(rows, cols);
@@ -17,8 +17,8 @@ public class NoC {
     private void setNeighbors(int rows, int cols) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Router north = (i > 0) ? routers[i - 1][j] : null;
-                Router south = (i < rows - 1) ? routers[i + 1][j] : null;
+                Router south = (i > 0) ? routers[i - 1][j] : null;
+                Router north = (i < rows - 1) ? routers[i + 1][j] : null;
                 Router east = (j < cols - 1) ? routers[i][j + 1] : null;
                 Router west = (j > 0) ? routers[i][j - 1] : null;
                 routers[i][j].setNeighbors(north, south, east, west);
@@ -27,7 +27,7 @@ public class NoC {
     }
 
     public void blockRouter(int x, int y) {
-        routers[x][y].block();
+        routers[y][x].block();
     }
 
     public List<String> sendPacket(int[] source, int[] destination, int size) {
@@ -39,10 +39,11 @@ public class NoC {
         return path;
     }
 
-    public void routeAllFlits() {
+    public void routeAllFlits(int hops, List<String> path) {
         for (Router[] routerRow : routers) {
             for (Router router : routerRow) {
-                router.forwardFlits(0, new ArrayList<>());
+                router.resetFlits();
+                router.forwardFlits(hops, path);
             }
         }
     }
