@@ -1,14 +1,15 @@
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Deque;
 
 public class Router {
     private final int[] position;
     private Router north, south, east, west;
-    private final Queue<Flit> bufferN;
-    private final Queue<Flit> bufferS;
-    private final Queue<Flit> bufferE;
-    private final Queue<Flit> bufferW;
+    private final Deque<Flit> bufferN;
+    private final Deque<Flit> bufferS;
+    private final Deque<Flit> bufferE;
+    private final Deque<Flit> bufferW;
     private final Queue<Flit> bufferLocal;
     private boolean blocked;
 
@@ -44,7 +45,7 @@ public class Router {
         path.add("Flit "+flit.getData()+" at Router (" + position[0] + "," + position[1] + ")");
         if (destination[0] == position[0] && destination[1] == position[1]) {
             bufferLocal.add(flit);
-            path.add("Flit "+flit.getData()+" arrived at destination in " + hops + " hops");
+            path.add("Flit "+flit.getData()+" arrived at destination in " + (flit.hop()-1) + " hops");
             return;
         } else {
             if (destination[0] > position[0] && east != null && !east.blocked) {
@@ -72,29 +73,29 @@ public class Router {
         if (!bufferN.isEmpty() && north != null) {
             Flit f = bufferN.poll();
             //System.out.println("Was Flit "+f.hashCode()+" from buffer "+bufferN.size()+" moved? "+f.moved);
-            if(!f.moved) north.routeFlit(f, hops + 1, path);
-            else bufferN.add(f);
+            if(!f.moved) north.routeFlit(f, f.hop(), path);
+            else bufferN.push(f);
             f.moved = true;
         }
         if (!bufferS.isEmpty() && south != null) {
             Flit f = bufferS.poll();
             //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
-            if(!f.moved) south.routeFlit(f, hops + 1, path);
-            else bufferS.add(f);
+            if(!f.moved) south.routeFlit(f, f.hop(), path);
+            else bufferS.push(f);
             f.moved = true;
         }
         if (!bufferE.isEmpty() && east != null) {
             Flit f = bufferE.poll();
             //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
-            if(!f.moved) east.routeFlit(f, hops + 1, path);
-            else bufferE.add(f);
+            if(!f.moved) east.routeFlit(f, f.hop(), path);
+            else bufferE.push(f);
             f.moved = true;
         }
         if (!bufferW.isEmpty() && west != null) {
             Flit f = bufferW.poll();
             //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
-            if(!f.moved) west.routeFlit(f, hops + 1, path);
-            else bufferW.add(f);
+            if(!f.moved) west.routeFlit(f, f.hop(), path);
+            else bufferW.push(f);
             f.moved = true;
         }
     }
