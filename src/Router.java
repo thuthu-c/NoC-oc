@@ -5,15 +5,17 @@ import java.util.Deque;
 
 public class Router {
     private final int[] position;
-    private Router north, south, east, west;
+    public Router north, south, east, west;
     private final Deque<Flit> bufferN;
     private final Deque<Flit> bufferS;
     private final Deque<Flit> bufferE;
     private final Deque<Flit> bufferW;
     private final Queue<Flit> bufferLocal;
-    private boolean blocked;
+    public boolean blocked;
+    private int[][] graph;
+    private int rows, cols;
 
-    public Router(int x, int y) {
+    public Router(int x, int y, int rows, int cols) {
         this.position = new int[]{x, y};
         this.bufferN = new LinkedList<>();
         this.bufferS = new LinkedList<>();
@@ -21,6 +23,8 @@ public class Router {
         this.bufferW = new LinkedList<>();
         this.bufferLocal = new LinkedList<>();
         this.blocked = false;
+        this.rows = rows;
+        this.cols = cols;
     }
 
     public void setNeighbors(Router north, Router south, Router east, Router west) {
@@ -41,59 +45,91 @@ public class Router {
             path.add("Router (" + position[0] + "," + position[1] + ") is blocked");
             return;
         }
-        //System.out.println("Flit "+flit.hashCode()+" at Router (" + position[0] + "," + position[1] + ") hash "+hashCode());
         path.add("Flit "+flit.getData()+" at Router (" + position[0] + "," + position[1] + ")");
         if (destination[0] == position[0] && destination[1] == position[1]) {
             bufferLocal.add(flit);
             path.add("Flit "+flit.getData()+" arrived at destination in " + (flit.hop()-1) + " hops");
             return;
         } else {
-            if (destination[0] > position[0] && east != null && !east.blocked) {
-                //System.out.println("Sending Flit "+flit.hashCode()+" East!");
-                bufferE.add(flit);
-            } else if (destination[0] < position[0] && west != null && !west.blocked) {
-                //System.out.println("Sending Flit "+flit.hashCode()+" West!");
-                bufferW.add(flit);
-            } else if (destination[1] > position[1] && north != null && !north.blocked) {
+            int nextStep = decideNextRouter(destination);
 
-                bufferN.add(flit);
-                //System.out.println("Resetting North! "+bufferN.size() + " Of router "+hashCode());
-                //System.out.println("Sending Flit "+flit.hashCode()+" North! "+bufferN.size()+" Of router "+hashCode());
-            } else if (destination[1] < position[1] && south != null && !south.blocked) {
-                //System.out.println("Sending Flit "+flit.hashCode()+" South!");
-                bufferS.add(flit);
+            if (nextStep == 1) bufferW.add(flit);
+            else if(nextStep == cols) bufferS.add(flit);
+            else if(nextStep == -cols) bufferN.add(flit);
+            else if(nextStep == -1) bufferE.add(flit);
+            else path.add("Cannot route flit from (" + position[0] + "," + position[1] +")");
+        }
+    }
+
+    private int decideNextRouter(int[] destination){
+        int vertices = graph.length;
+        int[] prev = new int[vertices];
+
+        //O código da BFS a seguir foi feita por e está disponível no site do Geeks For Geeks. Foi alterada para cálculo de distâncias apenas.
+        // Create a queue for BFS
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visited = new boolean[vertices];
+
+        int startNode = position[1] * cols + position[0];
+        //double-checking
+
+        // Mark the current node as visited and enqueue it
+        visited[startNode] = true;
+        queue.add(startNode);
+
+        // Iterate over the queue
+        while (!queue.isEmpty()) {
+            // Dequeue a vertex from queue and print it
+            int currentNode = queue.poll();
+
+            // Get all adjacent vertices of the dequeued
+            // vertex currentNode If an adjacent has not
+            // been visited, then mark it visited and
+            // enqueue it
+            for (int neighbor : graph[currentNode]) {
+                if(neighbor == 0) break;
+                if (!visited[neighbor-1]) {
+                    prev[neighbor-1] = currentNode;
+                    visited[neighbor-1] = true;
+                    queue.add(neighbor-1);
+                }
+            }
+        }
+        int currentNode = destination[1] * cols + destination[0];
+        while(true){
+            if(prev[currentNode] == startNode){
+                return startNode - currentNode;
             } else {
-                path.add("Cannot route flit from (" + position[0] + "," + position[1] +")");
+                currentNode = prev[currentNode];
             }
         }
     }
 
+    public void setGraph(int[][] graph){
+        this.graph = graph;
+    }
+
     public void forwardFlits(int hops, List<String> path) {
-        //System.out.println("Forwarding North! "+bufferN.size() + " Of router "+hashCode());
         if (!bufferN.isEmpty() && north != null) {
             Flit f = bufferN.poll();
-            //System.out.println("Was Flit "+f.hashCode()+" from buffer "+bufferN.size()+" moved? "+f.moved);
             if(!f.moved) north.routeFlit(f, f.hop(), path);
             else bufferN.push(f);
             f.moved = true;
         }
         if (!bufferS.isEmpty() && south != null) {
             Flit f = bufferS.poll();
-            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) south.routeFlit(f, f.hop(), path);
             else bufferS.push(f);
             f.moved = true;
         }
         if (!bufferE.isEmpty() && east != null) {
             Flit f = bufferE.poll();
-            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) east.routeFlit(f, f.hop(), path);
             else bufferE.push(f);
             f.moved = true;
         }
         if (!bufferW.isEmpty() && west != null) {
             Flit f = bufferW.poll();
-            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) west.routeFlit(f, f.hop(), path);
             else bufferW.push(f);
             f.moved = true;
@@ -105,16 +141,14 @@ public class Router {
             t.moved = false;
         }
         for (Flit t : bufferW){
-            //System.out.println("Resetting West! "+t.hashCode());
             t.moved = false;
         }
-        //System.out.println("Resetting North! "+bufferN.size() + " Of router "+hashCode());
+
         for (Flit t : bufferN){
-            //System.out.println("Resetting "+t.hashCode());
+
             t.moved = false;
         }
         for (Flit t : bufferS){
-            //System.out.println("Resetting South! "+t.hashCode());
             t.moved = false;
         }
     }
@@ -122,7 +156,6 @@ public class Router {
     public void printLocalBuffer() {
         while (!bufferLocal.isEmpty()) {
             Flit flit = bufferLocal.poll();
-            //System.out.println("Flit received at (" + position[0] + ", " + position[1] + "): " + flit.hashCode());
         }
     }
 }

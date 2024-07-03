@@ -3,12 +3,15 @@ import java.util.List;
 
 public class NoC {
     private final Router[][] routers;
+    private final int rows, cols;
 
     public NoC(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
         routers = new Router[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                routers[i][j] = new Router(j, i);
+                routers[i][j] = new Router(j, i, rows, cols);
             }
         }
         setNeighbors(rows, cols);
@@ -40,12 +43,9 @@ public class NoC {
     }
 
     public void routeAllFlits(int hops, List<String> path) {
-        int contx = 0, conty=-1;
+        path.add("Beginning cycle #"+ hops);
         for (Router[] routerRow : routers) {
-            contx = 0;
-            ++conty;
             for (Router router : routerRow) {
-                //System.out.println("Roteador "+contx++ +','+conty +" hash "+router.hashCode());
                 router.resetFlits();
             }
         }
@@ -60,6 +60,43 @@ public class NoC {
         for (Router[] routerRow : routers) {
             for (Router router : routerRow) {
                 router.printLocalBuffer();
+            }
+        }
+    }
+
+    public void mapGraphs(){
+        int[][] graph = new int[rows*cols][4];
+        int nrouter=-1;
+
+        for (Router[] routerRow : routers) {
+            for (Router router : routerRow) {
+                int neighborsLeft = 4;
+                ++nrouter;
+                if(router.east == null || router.east.blocked){
+                    --neighborsLeft;
+                } else {
+                    graph[nrouter][neighborsLeft-4] = nrouter + 2;
+                }
+                if(router.north == null || router.north.blocked){
+                    --neighborsLeft;
+                } else {
+                    graph[nrouter][neighborsLeft-3] = nrouter + cols + 1;
+                }
+                if(router.west == null || router.west.blocked){
+                    --neighborsLeft;
+                } else {
+                    graph[nrouter][neighborsLeft-2] = nrouter;
+                }
+                if(router.south == null || router.south.blocked){
+                    --neighborsLeft;
+                } else {
+                    graph[nrouter][neighborsLeft-1] = nrouter - cols + 1;
+                }
+            }
+        }
+        for (Router[] routerRow : routers) {
+            for (Router router : routerRow) {
+                router.setGraph(graph);
             }
         }
     }

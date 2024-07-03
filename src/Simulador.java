@@ -1,30 +1,79 @@
 import java.util.List;
-
+import java.util.ArrayList;
+import java.util.Scanner;
 public class Simulador {
-    public static void main(String[] args) {
-        NoC noc = new NoC(4, 4);
+    private NoC noc;
+    private List<String> path;
+    public Simulador(){
+        path = new ArrayList<>();
+    }
+    public void run() {
+        startNoC();
+
         // Bloqueando alguns roteadores
-        noc.blockRouter(1, 0);
-        noc.blockRouter(1, 1);
-        //noc.blockRouter(0, 2);
+        blockRouters();
+        noc.mapGraphs();
 
         // Enviando um pacote da posição (0, 0) para (7, 7) com 5 variáveis
-        List<String> path = noc.sendPacket(new int[]{0, 0}, new int[]{3, 3}, 5);
+        sendPackets();
+
+        System.out.println("At last, how many cycles would you like us to execute?");
+        Scanner s = new Scanner(System.in);
+        int cycles = s.nextInt();
 
         // Executando múltiplos ciclos para rotear todos os flits
-        for (int i = 0; i < 10; i++) {  // Ajuste o número de ciclos conforme necessário
-            //System.out.println(i);
-            noc.routeAllFlits(i, path);
+        for (int i = 0; i < cycles; i++) {  // Ajuste o número de ciclos conforme necessário
+            noc.routeAllFlits(i+1, path);
         }
 
-        System.out.println("-------------------------------------------------------------------------");
-
         // Imprimindo a rota seguida pelos flits
-        for (String step : path) {
+        for(String step : path) {
             System.out.println(step);
         }
 
+
         // Imprimindo os buffers locais para verificar se os flits chegaram ao destino
         noc.printAllLocalBuffers();
+    }
+
+    public void startNoC(){
+        System.out.println("What's the size of your NoC? (lines x columns)");
+        Scanner s = new Scanner(System.in);  // Create a Scanner object
+        int rows, cols;
+        rows = s.nextInt();
+        cols = s.nextInt();
+        noc = new NoC(rows, cols);
+    }
+    public void blockRouters(){
+        System.out.println("How many routers would you like to block?");
+        Scanner s = new Scanner(System.in);  // Create a Scanner object
+        int n, rows, cols;
+        n = s.nextInt();
+        for (int i = 0; i < n; i++) {
+            System.out.println("Coordinates for blocked router #"+(i+1));
+            rows = s.nextInt();
+            cols = s.nextInt();
+            noc.blockRouter(rows,cols);
+        }
+    }
+
+    public void sendPackets(){
+        System.out.println("How many packet would you like to send?");
+        Scanner s = new Scanner(System.in);  // Create a Scanner object
+        int n, srcx, srcy, tgtx, tgty, data;
+        n = s.nextInt();
+        for (int i = 0; i < n; i++) {
+            System.out.println("Please, type the *source* of packet #"+(i+1));
+            srcy = s.nextInt();
+            srcx = s.nextInt();
+            System.out.println("Please, type the *destination* of packet #"+(i+1));
+            tgty = s.nextInt();
+            tgtx = s.nextInt();
+            System.out.println("Please, type the *size* of packet #"+(i+1));
+            data = s.nextInt();
+
+            List<String> additions = noc.sendPacket(new int[]{srcx,srcy},new int[]{tgtx,tgty}, data);
+            for(String p: additions) path.add(p);
+        }
     }
 }
