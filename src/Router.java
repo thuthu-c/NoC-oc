@@ -40,20 +40,26 @@ public class Router {
             path.add("Router (" + position[0] + "," + position[1] + ") is blocked");
             return;
         }
-
+        //System.out.println("Flit "+flit.hashCode()+" at Router (" + position[0] + "," + position[1] + ") hash "+hashCode());
         path.add("Flit "+flit.getData()+" at Router (" + position[0] + "," + position[1] + ")");
         if (destination[0] == position[0] && destination[1] == position[1]) {
             bufferLocal.add(flit);
-            path.add("Arrived at destination in " + hops + " hops");
+            path.add("Flit "+flit.getData()+" arrived at destination in " + hops + " hops");
             return;
         } else {
             if (destination[0] > position[0] && east != null && !east.blocked) {
-                 bufferE.add(flit);
+                //System.out.println("Sending Flit "+flit.hashCode()+" East!");
+                bufferE.add(flit);
             } else if (destination[0] < position[0] && west != null && !west.blocked) {
-                 bufferW.add(flit);
+                //System.out.println("Sending Flit "+flit.hashCode()+" West!");
+                bufferW.add(flit);
             } else if (destination[1] > position[1] && north != null && !north.blocked) {
+
                 bufferN.add(flit);
+                //System.out.println("Resetting North! "+bufferN.size() + " Of router "+hashCode());
+                //System.out.println("Sending Flit "+flit.hashCode()+" North! "+bufferN.size()+" Of router "+hashCode());
             } else if (destination[1] < position[1] && south != null && !south.blocked) {
+                //System.out.println("Sending Flit "+flit.hashCode()+" South!");
                 bufferS.add(flit);
             } else {
                 path.add("Cannot route flit from (" + position[0] + "," + position[1] +")");
@@ -62,47 +68,52 @@ public class Router {
     }
 
     public void forwardFlits(int hops, List<String> path) {
+        //System.out.println("Forwarding North! "+bufferN.size() + " Of router "+hashCode());
         if (!bufferN.isEmpty() && north != null) {
             Flit f = bufferN.poll();
+            //System.out.println("Was Flit "+f.hashCode()+" from buffer "+bufferN.size()+" moved? "+f.moved);
             if(!f.moved) north.routeFlit(f, hops + 1, path);
+            else bufferN.add(f);
             f.moved = true;
         }
         if (!bufferS.isEmpty() && south != null) {
             Flit f = bufferS.poll();
+            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) south.routeFlit(f, hops + 1, path);
+            else bufferS.add(f);
             f.moved = true;
         }
         if (!bufferE.isEmpty() && east != null) {
             Flit f = bufferE.poll();
+            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) east.routeFlit(f, hops + 1, path);
+            else bufferE.add(f);
             f.moved = true;
         }
         if (!bufferW.isEmpty() && west != null) {
             Flit f = bufferW.poll();
+            //System.out.println("Was Flit "+f.hashCode()+" moved? "+f.moved);
             if(!f.moved) west.routeFlit(f, hops + 1, path);
+            else bufferW.add(f);
             f.moved = true;
         }
     }
     public void resetFlits(){
-        Queue<Flit> buffer = new LinkedList<>();
-        buffer.addAll(bufferE);
-        while (!buffer.isEmpty()){
-            Flit t = buffer.poll();
+        for (Flit t : bufferE){
+            //System.out.println("Resetting East! "+t.hashCode());
             t.moved = false;
         }
-        buffer.addAll(bufferW);
-        while (!buffer.isEmpty()){
-            Flit t = buffer.poll();
+        for (Flit t : bufferW){
+            //System.out.println("Resetting West! "+t.hashCode());
             t.moved = false;
         }
-        buffer.addAll(bufferN);
-        while (!buffer.isEmpty()){
-            Flit t = buffer.poll();
+        //System.out.println("Resetting North! "+bufferN.size() + " Of router "+hashCode());
+        for (Flit t : bufferN){
+            //System.out.println("Resetting "+t.hashCode());
             t.moved = false;
         }
-        buffer.addAll(bufferS);
-        while (!buffer.isEmpty()){
-            Flit t = buffer.poll();
+        for (Flit t : bufferS){
+            //System.out.println("Resetting South! "+t.hashCode());
             t.moved = false;
         }
     }
@@ -110,7 +121,7 @@ public class Router {
     public void printLocalBuffer() {
         while (!bufferLocal.isEmpty()) {
             Flit flit = bufferLocal.poll();
-            System.out.println("Flit received at (" + position[0] + ", " + position[1] + "): " + flit.getData());
+            //System.out.println("Flit received at (" + position[0] + ", " + position[1] + "): " + flit.hashCode());
         }
     }
 }

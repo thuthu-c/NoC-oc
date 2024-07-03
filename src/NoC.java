@@ -40,9 +40,17 @@ public class NoC {
     }
 
     public void routeAllFlits(int hops, List<String> path) {
+        int contx = 0, conty=-1;
+        for (Router[] routerRow : routers) {
+            contx = 0;
+            ++conty;
+            for (Router router : routerRow) {
+                //System.out.println("Roteador "+contx++ +','+conty +" hash "+router.hashCode());
+                router.resetFlits();
+            }
+        }
         for (Router[] routerRow : routers) {
             for (Router router : routerRow) {
-                router.resetFlits();
                 router.forwardFlits(hops, path);
             }
         }
