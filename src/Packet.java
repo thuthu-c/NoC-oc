@@ -6,12 +6,12 @@ public class Packet {
     private final int[] destination;
     private final List<Flit> flits;
 
-    public Packet(int[] source, int[] destination, int size) {
+    public Packet(int[] source, int[] destination, int size, int id) {
         this.source = source;
         this.destination = destination;
         this.flits = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            flits.add(new Flit(source, destination, i));
+            flits.add(new Flit(source, destination, i, id));
         }
     }
 

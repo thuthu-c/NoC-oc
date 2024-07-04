@@ -4,9 +4,13 @@ import java.util.Scanner;
 public class Simulador {
     private NoC noc;
     private List<String> path;
+
+    private Scanner s;
     public Simulador(){
         path = new ArrayList<>();
+        s = new Scanner(System.in);
     }
+
     public void run() {
         startNoC();
 
@@ -18,7 +22,6 @@ public class Simulador {
         sendPackets();
 
         System.out.println("At last, how many cycles would you like us to execute?");
-        Scanner s = new Scanner(System.in);
         int cycles = s.nextInt();
 
         // Executando múltiplos ciclos para rotear todos os flits
@@ -38,7 +41,6 @@ public class Simulador {
 
     public void startNoC(){
         System.out.println("What's the size of your NoC? (lines x columns)");
-        Scanner s = new Scanner(System.in);  // Create a Scanner object
         int rows, cols;
         rows = s.nextInt();
         cols = s.nextInt();
@@ -46,8 +48,10 @@ public class Simulador {
     }
     public void blockRouters(){
         System.out.println("How many routers would you like to block?");
-        Scanner s = new Scanner(System.in);  // Create a Scanner object
+        // Lê o conteúdo do arquivo redirecionado e processa conforme necessário
+
         int n, rows, cols;
+
         n = s.nextInt();
         for (int i = 0; i < n; i++) {
             System.out.println("Coordinates for blocked router #"+(i+1));
@@ -59,7 +63,6 @@ public class Simulador {
 
     public void sendPackets(){
         System.out.println("How many packet would you like to send?");
-        Scanner s = new Scanner(System.in);  // Create a Scanner object
         int n, srcx, srcy, tgtx, tgty, data;
         n = s.nextInt();
         for (int i = 0; i < n; i++) {
@@ -72,7 +75,7 @@ public class Simulador {
             System.out.println("Please, type the *size* of packet #"+(i+1));
             data = s.nextInt();
 
-            List<String> additions = noc.sendPacket(new int[]{srcx,srcy},new int[]{tgtx,tgty}, data);
+            List<String> additions = noc.sendPacket(new int[]{srcx,srcy},new int[]{tgtx,tgty}, data, i+1);
             for(String p: additions) path.add(p);
         }
     }

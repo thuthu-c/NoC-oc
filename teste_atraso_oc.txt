@@ -1,0 +1,170 @@
+entrada: 
+4 4
+0
+2
+0 0
+3 3
+1
+3 0
+0 0
+1
+20 
+
+saída: 
+What's the size of your NoC? (lines x columns)
+How many routers would you like to block?
+Coordinates for blocked router #1
+Coordinates for blocked router #2
+How many packet would you like to send?
+Please, type the *source* of packet #1
+Please, type the *destination* of packet #1
+Please, type the *size* of packet #1
+Please, type the *source* of packet #2
+Please, type the *destination* of packet #2
+Please, type the *size* of packet #2
+At last, how many cycles would you like us to execute?
+Flit 0 form packet 1 at Router (0,0)
+Flit 0 form packet 2 at Router (3,0)
+Beginning cycle #1
+Flit 0 form packet 1 at Router (0,1)
+Flit 0 form packet 2 at Router (3,1)
+Beginning cycle #2
+Flit 0 form packet 1 at Router (0,2)
+Flit 0 form packet 2 at Router (3,2)
+Beginning cycle #3
+Flit 0 form packet 1 at Router (1,2)
+Flit 0 form packet 2 at Router (2,2)
+Beginning cycle #4
+Flit 0 form packet 1 at Router (2,2)
+Flit 0 form packet 2 at Router (1,2)
+Beginning cycle #5
+Flit 0 form packet 2 at Router (0,2)
+Flit 0 form packet 1 at Router (3,2)
+Beginning cycle #6
+Flit 0 form packet 2 at Router (0,1)
+Flit 0 form packet 1 at Router (3,3)
+Flit 0 form packet 1 arrived at destination in 6 hops
+Beginning cycle #7
+Flit 0 form packet 2 at Router (0,0)
+Flit 0 form packet 2 arrived at destination in 7 hops
+Beginning cycle #8
+Beginning cycle #9
+Beginning cycle #10
+Beginning cycle #11
+Beginning cycle #12
+Beginning cycle #13
+Beginning cycle #14
+Beginning cycle #15
+Beginning cycle #16
+Beginning cycle #17
+Beginning cycle #18
+Beginning cycle #19
+Beginning cycle #20
+(base) stella_maris@LAPTOP-N84A5OL6:/mnt/c/Users/Esther/NoC-oc/src$ java Main.java < ../tests/test2.txt 
+What's the size of your NoC? (lines x columns)
+How many routers would you like to block?
+How many packet would you like to send?
+Please, type the *source* of packet #1
+Please, type the *destination* of packet #1
+Please, type the *size* of packet #1
+Please, type the *source* of packet #2
+Please, type the *destination* of packet #2
+Please, type the *size* of packet #2
+At last, how many cycles would you like us to execute?
+Flit 0 form packet 1 at Router (0,0)
+Flit 0 form packet 2 at Router (3,0)
+Beginning cycle #1
+Flit 0 form packet 1 at Router (1,0)
+Flit 0 form packet 2 at Router (2,0)
+Beginning cycle #2
+Flit 0 form packet 1 at Router (2,0)
+Flit 0 form packet 2 arrived at destination in 3 hops
+Flit 0 form packet 1 at Router (3,0)
+Beginning cycle #4
+Flit 0 form packet 1 at Router (3,1)
+Beginning cycle #5
+Flit 0 form packet 1 at Router (3,2)
+Beginning cycle #6
+Flit 0 form packet 1 at Router (3,3)
+Flit 0 form packet 1 arrived at destination in 6 hops
+Beginning cycle #7
+Beginning cycle #8
+Beginning cycle #9
+Beginning cycle #10
+Beginning cycle #11
+Beginning cycle #12
+Beginning cycle #13
+Beginning cycle #14
+Beginning cycle #15
+Beginning cycle #16
+Beginning cycle #17
+Beginning cycle #18
+Beginning cycle #19
+Beginning cycle #20
+
+
+
+entrada: 
+4 4
+2
+1 0
+1 1
+2
+0 0
+3 3
+1
+3 0
+0 0
+1
+20
+
+saída: 
+What's the size of your NoC? (lines x columns)
+How many routers would you like to block?
+Coordinates for blocked router #1
+Coordinates for blocked router #2
+How many packet would you like to send?
+Please, type the *source* of packet #1
+Please, type the *destination* of packet #1
+Please, type the *size* of packet #1
+Please, type the *source* of packet #2
+Please, type the *destination* of packet #2
+Please, type the *size* of packet #2
+At last, how many cycles would you like us to execute?
+Flit 0 form packet 1 at Router (0,0)
+Flit 0 form packet 2 at Router (3,0)
+Beginning cycle #1
+Flit 0 form packet 1 at Router (0,1)
+Flit 0 form packet 2 at Router (3,1)
+Beginning cycle #2
+Flit 0 form packet 1 at Router (0,2)
+Flit 0 form packet 2 at Router (3,2)
+Beginning cycle #3
+Flit 0 form packet 1 at Router (1,2)
+Flit 0 form packet 2 at Router (2,2)
+Beginning cycle #4
+Flit 0 form packet 1 at Router (2,2)
+Flit 0 form packet 2 at Router (1,2)
+Beginning cycle #5
+Flit 0 form packet 2 at Router (0,2)
+Flit 0 form packet 1 at Router (3,2)
+Beginning cycle #6
+Flit 0 form packet 2 at Router (0,1)
+Flit 0 form packet 1 at Router (3,3)
+Flit 0 form packet 1 arrived at destination in 6 hops
+Beginning cycle #7
+Flit 0 form packet 2 at Router (0,0)
+Flit 0 form packet 2 arrived at destination in 7 hops
+Beginning cycle #8
+Beginning cycle #9
+Beginning cycle #10
+Beginning cycle #11
+Beginning cycle #12
+Beginning cycle #13
+Beginning cycle #14
+Beginning cycle #15
+Beginning cycle #16
+Beginning cycle #17
+Beginning cycle #18
+Beginning cycle #19
+Beginning cycle #20

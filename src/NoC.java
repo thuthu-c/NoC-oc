@@ -33,8 +33,8 @@ public class NoC {
         routers[y][x].block();
     }
 
-    public List<String> sendPacket(int[] source, int[] destination, int size) {
-        Packet packet = new Packet(source, destination, size);
+    public List<String> sendPacket(int[] source, int[] destination, int size, int id) {
+        Packet packet = new Packet(source, destination, size, id);
         List<String> path = new ArrayList<>();
         for (Flit flit : packet.getFlits()) {
             routers[source[0]][source[1]].routeFlit(flit, 0, path);

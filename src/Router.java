@@ -45,10 +45,10 @@ public class Router {
             path.add("Router (" + position[0] + "," + position[1] + ") is blocked");
             return;
         }
-        path.add("Flit "+flit.getData()+" at Router (" + position[0] + "," + position[1] + ")");
+        path.add("Flit "+flit.getData()+" form packet "+flit.packet+" at Router (" + position[0] + "," + position[1] + ")");
         if (destination[0] == position[0] && destination[1] == position[1]) {
             bufferLocal.add(flit);
-            path.add("Flit "+flit.getData()+" arrived at destination in " + (flit.hop()-1) + " hops");
+            path.add("Flit "+flit.getData()+" form packet "+flit.packet+" arrived at destination in " + (flit.hop()-1) + " hops");
             return;
         } else {
             int nextStep = decideNextRouter(destination);
